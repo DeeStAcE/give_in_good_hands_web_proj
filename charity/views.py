@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
 from charity.models import *
@@ -23,7 +24,15 @@ class IndexView(View):
         return render(request, 'index.html', context=context)
 
 
-class AddDonation(View):
+class AddDonation(LoginRequiredMixin, View):
+    login_url = 'login'
 
     def get(self, request):
-        return render(request, 'form.html')
+        categories = Category.objects.all()
+        institutions = Institution.objects.all()
+
+        context = {
+            'categories': categories,
+            'institutions': institutions,
+        }
+        return render(request, 'form.html', context=context)
