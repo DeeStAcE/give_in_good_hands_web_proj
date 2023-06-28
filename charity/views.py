@@ -24,7 +24,7 @@ class IndexView(View):
         return render(request, 'index.html', context=context)
 
 
-class AddDonation(LoginRequiredMixin, View):
+class AddDonationView(LoginRequiredMixin, View):
     login_url = 'login'
 
     def get(self, request):
@@ -36,3 +36,10 @@ class AddDonation(LoginRequiredMixin, View):
             'institutions': institutions,
         }
         return render(request, 'form.html', context=context)
+
+
+class UserView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request):
+        return render(request, 'user-page.html')

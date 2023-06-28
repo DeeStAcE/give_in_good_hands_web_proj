@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block content %}
+    {% load static %}
+    <header>
+        {% include "nav.html" %}
+    </header>
+
+    <section class="login-page">
+        <h2>Profil użytkownika</h2>
+        <div class="form-group profile-info">
+            Imię: {{ user.first_name }}
+        </div>
+        <div class="form-group profile-info">
+            Nazwisko: {{ user.last_name }}
+        </div>
+        <div class="form-group profile-info">
+            email: {{ user.email }}
+        </div>
+    </section>
+{% endblock %}

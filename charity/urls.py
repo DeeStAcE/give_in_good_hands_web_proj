@@ -3,5 +3,6 @@ from charity.views import *
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
-    path('add-donation/', AddDonation.as_view(), name='add-donation'),
+    path('add-donation/', AddDonationView.as_view(), name='add-donation'),
+    path('user/', UserView.as_view(), name='user-page'),
 ]
