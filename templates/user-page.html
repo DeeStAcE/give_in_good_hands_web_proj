@@ -1,0 +1,63 @@
+{% extends 'base.html' %} {% block content %}
+    {% load static %}
+    <header>
+        {% include "nav.html" %}
+    </header>
+
+    <section class="login-page">
+        <h2>Profil użytkownika</h2>
+        <div class="form-group profile-info">
+            Imię: {{ user.first_name }}
+        </div>
+        <div class="form-group profile-info">
+            Nazwisko: {{ user.last_name }}
+        </div>
+        <div class="form-group profile-info">
+            email: {{ user.email }}
+        </div>
+
+    </section>
+    <section class="help">
+        <h2>Donacje użytkownika</h2>
+        <div class="help--slides active">
+            {% if donations %}
+                <ul class="help--slides-items">
+                    {% for donation in donations %}
+                        <form method="post">
+                            {% csrf_token %}
+                            {% if donation.is_taken %}
+                                <li class="object-taken">
+                                    {% else %}
+                                <li>
+                            {% endif %}
+                            <div class="col">
+                                <div class="title">{{ donation.institution }}</div>
+                                <div class="subtitle">
+                                    {{ donation.quantity }} x 60l worków |
+                                    {% for category in donation.categories.all %}
+                                        {{ category }} /
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="text">
+                                    Data odbioru: {{ donation.pick_up_time }} {{ donation.pick_up_date }}
+                                    <button type="submit" class="btn-taken" name="taken" value="{{ donation.id }}">
+                                        (nie)zabrane
+                                    </button>
+                                </div>
+                            </div>
+                            </li>
+                        </form>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="form-group profile-info">
+                    Brak donacji
+                </div>
+            {% endif %}
+        </div>
+
+    </section>
+{% endblock %}
