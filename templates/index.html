@@ -104,18 +104,18 @@
             </p>
 
             <ul class="help--slides-items">
-                {% for institution in foundations %}
+                {% for foundation in foundations %}
                     <li>
                         <div class="col">
-                            <div class="title">{{ institution.name }}</div>
+                            <div class="title">{{ foundation.name }}</div>
                             <div class="subtitle">
-                                {{ institution.description }}
+                                {{ foundation.description }}
                             </div>
                         </div>
 
                         <div class="col">
                             <div class="text">
-                                {% for category in institution.categories.all %}
+                                {% for category in foundation.categories.all %}
                                     {{ category }} |
                                 {% endfor %}
                             </div>
@@ -124,13 +124,20 @@
                 {% endfor %}
             </ul>
 
-            <!-- Pagination
+            <!-- Pagination -->
             <ul class="help--slides-pagination">
-              <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
+                <span class="step-links">
+                    {% if foundations.has_previous %}
+                        <a href="?page1={{ foundations.previous_page_number }}#help"
+                           class="btn btn--small btn--without-border">poprzednia</a>
+                    {% endif %}
+
+                    {% if foundations.has_next %}
+                        <a href="?page1={{ foundations.next_page_number }}#help"
+                           class="btn btn--small btn--without-border">następna</a>
+                    {% endif %}
+                </span>
             </ul>
-            -->
         </div>
 
         <!-- SLIDE 2 -->
@@ -162,15 +169,20 @@
                 {% endfor %}
             </ul>
 
-            <!-- Pagination
+            <!-- Pagination -->
             <ul class="help--slides-pagination">
-              <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="4">4</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="5">5</a></li>
+                <span class="step-links">
+                    {% if nongov_organizations.has_previous %}
+                        <a href="?page2={{ nongov_organizations.previous_page_number }}#help"
+                           class="btn btn--small btn--without-border">poprzednia</a>
+                    {% endif %}
+
+                    {% if nongov_organizations.has_next %}
+                        <a href="?page2={{ nongov_organizations.next_page_number }}#help"
+                           class="btn btn--small btn--without-border">następna</a>
+                    {% endif %}
+                </span>
             </ul>
-            -->
         </div>
 
         <!-- SLIDE 3 -->
@@ -202,12 +214,20 @@
                 {% endfor %}
             </ul>
 
-            <!-- Pagination
+            <!-- Pagination -->
             <ul class="help--slides-pagination">
-              <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
+                <span class="step-links">
+                    {% if local_collections.has_previous %}
+                        <a href="?page3={{ local_collections.previous_page_number }}#help"
+                           class="btn btn--small btn--without-border">poprzednia</a>
+                    {% endif %}
+
+                    {% if local_collections.has_next %}
+                        <a href="?page3={{ local_collections.next_page_number }}#help"
+                           class="btn btn--small btn--without-border">następna</a>
+                    {% endif %}
+                </span>
             </ul>
-            -->
         </div>
     </section>
 

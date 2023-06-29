@@ -60,10 +60,27 @@ document.addEventListener("DOMContentLoaded", function () {
          * TODO: callback to page change event
          */
         changePage(e) {
-            e.preventDefault();
+            // e.preventDefault();
+            const $btn = e.target;
             const page = e.target.dataset.page;
 
-            console.log(page);
+            /**
+             // Buttons Active class change
+             [...this.$pagesContainer.children].forEach(btn => btn.firstElementChild.classList.remove("active"));
+             $btn.classList.add("active");
+
+             // Current page
+             this.currentPage = $btn.dataset.page
+
+             // Pages active class change
+             this.$pagesContainer.forEach(el => {
+                el.firstElementChild.classList.remove("active")
+
+                if (el.firstElementChild.dataset.page === this.currentPage) {
+                    el.firstElementChild.classList.add("active")
+                }
+            })
+             */
         }
     }
 
@@ -222,7 +239,6 @@ document.addEventListener("DOMContentLoaded", function () {
          */
         updateForm() {
             this.$step.innerText = this.currentStep;
-
             // TODO: Validation
 
             this.slides.forEach(slide => {

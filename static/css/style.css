@@ -513,6 +513,16 @@ h2:after {
     border: 1px solid #3c3c3c;
 }
 
+.btn-taken {
+    color: #3c3c3c;
+    font-size: 1.2rem;
+    border: none;
+    text-align: center;
+    background: transparent;
+    cursor: pointer;
+    padding: 0 0 0 20px;
+}
+
 /* line 1, scss/modules/_forms.scss */
 form {
     display: -webkit-box;
@@ -1832,6 +1842,10 @@ footer .bottom-line--icons a img {
 .profile-info {
     font-size: 25px;
     padding: 10px;
+}
+
+.object-taken {
+    color: #bcbcbc;
 }
 
 
