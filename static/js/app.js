@@ -8,11 +8,16 @@ document.addEventListener("DOMContentLoaded", function () {
             this.$buttonsContainer = $el.querySelector(".help--buttons");
             this.$slidesContainers = $el.querySelectorAll(".help--slides");
             this.currentSlide = this.$buttonsContainer.querySelector(".active").parentElement.dataset.id;
+            this.paginationLimit = 2;
             this.init();
         }
 
         init() {
+            this.getPagesData()
             this.events();
+            this.getPaginationNumbers();
+            this.setDisplayedItems(1);
+            this.setActivePageButton();
         }
 
         events() {
@@ -22,6 +27,13 @@ document.addEventListener("DOMContentLoaded", function () {
             this.$buttonsContainer.addEventListener("click", e => {
                 if (e.target.classList.contains("btn")) {
                     this.changeSlide(e);
+                    this.$paginationNumbers.querySelectorAll("li").forEach(e => {
+                        this.$paginationNumbers.removeChild(e)
+                    })
+                    this.getPagesData()
+                    this.getPaginationNumbers()
+                    this.setDisplayedItems(1);
+                    this.setActivePageButton();
                 }
             });
 
@@ -56,31 +68,64 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        /**
-         * TODO: callback to page change event
-         */
-        changePage(e) {
-            // e.preventDefault();
-            const $btn = e.target;
-            const page = e.target.dataset.page;
+        // Pagination
 
-            /**
-             // Buttons Active class change
-             [...this.$pagesContainer.children].forEach(btn => btn.firstElementChild.classList.remove("active"));
-             $btn.classList.add("active");
+        // Get data of the shown elements
+        getPagesData() {
+            this.$paginatedList = document.querySelector(".help--slides.active");
+            this.$paginationNumbers = this.$paginatedList.querySelector("ul.help--slides-pagination");
+            this.$listItems = this.$paginatedList.querySelectorAll("ul.help--slides-items li");
+            this.currentPage = 1;
+            this.pageCount = Math.ceil(this.$listItems.length / this.paginationLimit);
+        }
 
-             // Current page
-             this.currentPage = $btn.dataset.page
+        // Show on page required organizations
+        setDisplayedItems(pageNum) {
+            this.currentPage = pageNum;
 
-             // Pages active class change
-             this.$pagesContainer.forEach(el => {
-                el.firstElementChild.classList.remove("active")
+            const prevRange = (pageNum - 1) * this.paginationLimit;
+            const currRange = pageNum * this.paginationLimit;
 
-                if (el.firstElementChild.dataset.page === this.currentPage) {
-                    el.firstElementChild.classList.add("active")
+            this.$listItems.forEach((el, index) => {
+                el.classList.add("hidden-item")
+                if (index >= prevRange && index < currRange) {
+                    el.classList.remove("hidden-item")
                 }
             })
-             */
+        }
+
+        // Set class "active" on the right button
+        setActivePageButton() {
+            this.$paginationNumbers.querySelectorAll("a").forEach(btn => {
+                btn.classList.remove("active");
+
+                const pageIndex = btn.getAttribute("page-index")
+                if (this.currentPage == pageIndex) {
+                    btn.classList.add("active")
+                }
+            });
+        }
+
+        // Get the data of paginated lists
+        getPaginationNumbers() {
+            for (let i = 1; i <= this.pageCount; i++) {
+                const pageNumberLi = document.createElement("li")
+                const pageNumberA = document.createElement("a")
+                pageNumberA.className = "btn btn--small btn--without-border";
+                pageNumberA.innerText = i;
+                pageNumberA.setAttribute("page-index", i)
+                pageNumberLi.appendChild(pageNumberA)
+                this.$paginationNumbers.appendChild(pageNumberLi)
+            }
+        }
+
+        // Action while clicked page button
+        changePage(e) {
+            e.preventDefault();
+            const $btn = e.target;
+            const pageIndex = e.target.getAttribute("page-index");
+            this.setDisplayedItems(pageIndex);
+            this.setActivePageButton();
         }
     }
 
