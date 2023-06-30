@@ -105,38 +105,27 @@
 
             <ul class="help--slides-items">
                 {% for foundation in foundations %}
-                    <li>
-                        <div class="col">
-                            <div class="title">{{ foundation.name }}</div>
-                            <div class="subtitle">
-                                {{ foundation.description }}
+                        <li>
+                            <div class="col">
+                                <div class="title">{{ foundation.name }}</div>
+                                <div class="subtitle">
+                                    {{ foundation.description }}
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col">
-                            <div class="text">
-                                {% for category in foundation.categories.all %}
-                                    {{ category }} |
-                                {% endfor %}
+                            <div class="col">
+                                <div class="text">
+                                    {% for category in foundation.categories.all %}
+                                        {{ category }} |
+                                    {% endfor %}
+                                </div>
                             </div>
-                        </div>
-                    </li>
+                        </li>
                 {% endfor %}
             </ul>
 
             <!-- Pagination -->
             <ul class="help--slides-pagination">
-                <span class="step-links">
-                    {% if foundations.has_previous %}
-                        <a href="?page1={{ foundations.previous_page_number }}#help"
-                           class="btn btn--small btn--without-border">poprzednia</a>
-                    {% endif %}
-
-                    {% if foundations.has_next %}
-                        <a href="?page1={{ foundations.next_page_number }}#help"
-                           class="btn btn--small btn--without-border">następna</a>
-                    {% endif %}
-                </span>
             </ul>
         </div>
 
@@ -171,17 +160,6 @@
 
             <!-- Pagination -->
             <ul class="help--slides-pagination">
-                <span class="step-links">
-                    {% if nongov_organizations.has_previous %}
-                        <a href="?page2={{ nongov_organizations.previous_page_number }}#help"
-                           class="btn btn--small btn--without-border">poprzednia</a>
-                    {% endif %}
-
-                    {% if nongov_organizations.has_next %}
-                        <a href="?page2={{ nongov_organizations.next_page_number }}#help"
-                           class="btn btn--small btn--without-border">następna</a>
-                    {% endif %}
-                </span>
             </ul>
         </div>
 
@@ -216,17 +194,6 @@
 
             <!-- Pagination -->
             <ul class="help--slides-pagination">
-                <span class="step-links">
-                    {% if local_collections.has_previous %}
-                        <a href="?page3={{ local_collections.previous_page_number }}#help"
-                           class="btn btn--small btn--without-border">poprzednia</a>
-                    {% endif %}
-
-                    {% if local_collections.has_next %}
-                        <a href="?page3={{ local_collections.next_page_number }}#help"
-                           class="btn btn--small btn--without-border">następna</a>
-                    {% endif %}
-                </span>
             </ul>
         </div>
     </section>
