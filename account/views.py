@@ -1,11 +1,48 @@
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from django.contrib import messages
+from django.core.mail import EmailMessage
+
+from account.tokens import account_activation_token
 
 
+# email verification message
+def activate_email(request, user, to_email):
+    mail_subject = "Activate your user account"
+    message = render_to_string("email_verification.html", {
+        'user': user,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+
+    if email.send():
+        messages.success(request, f"Przejdź do swojej skrzynki pocztowej w celu potwierdzenia rejestracji")
+    else:
+        messages.error(request, f"Problem podczas wysyłania potwierdzenia rejestracji")
+
+
+def get_user_from_email_verification_token(uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = get_user_model().objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
+        return None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        return user
+    return None
+
+
+# -------------------------------- class views ---------------------------------
 class LoginView(View):
 
     def get(self, request):
@@ -24,8 +61,8 @@ class LoginView(View):
             login(request, user)
             return redirect('index')
         else:
-            messages.error(request, 'Błędny email lub hasło')
-            return redirect('login')
+            messages.error(request, 'Błędny email lub hasło / konto nie zostało aktywowane')
+        return redirect('login')
 
 
 class LogoutView(View):
@@ -56,8 +93,8 @@ class RegisterView(View):
             return redirect('register')
 
         user = User.objects.create_user(first_name=name, last_name=surname, password=password, email=email,
-                                        username=email)
-        login(request, user)
+                                        username=email, is_active=False)
+        activate_email(request, user, email)
         return redirect('index')
 
 
@@ -99,3 +136,15 @@ class EditUserView(LoginRequiredMixin, View):
             user.save()
             login(request, user)
             return redirect('user-page')
+
+
+class ActivateUserView(View):
+
+    def get(self, request, uidb64, token):
+        user = get_user_from_email_verification_token(uidb64, token)
+        if user is None:
+            return redirect('index')
+        user.is_active = True
+        user.save()
+        messages.success(request, f"Konto aktywowane pomyślnie")
+        return redirect('login')
