@@ -2,6 +2,11 @@
     {% load static %}
     <header class="header--main-page">
         {% include "nav.html" %}
+
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+
         <div class="slogan container container--90">
             <div class="slogan--item">
                 <h1>
@@ -105,22 +110,22 @@
 
             <ul class="help--slides-items">
                 {% for foundation in foundations %}
-                        <li>
-                            <div class="col">
-                                <div class="title">{{ foundation.name }}</div>
-                                <div class="subtitle">
-                                    {{ foundation.description }}
-                                </div>
+                    <li>
+                        <div class="col">
+                            <div class="title">{{ foundation.name }}</div>
+                            <div class="subtitle">
+                                {{ foundation.description }}
                             </div>
+                        </div>
 
-                            <div class="col">
-                                <div class="text">
-                                    {% for category in foundation.categories.all %}
-                                        {{ category }} |
-                                    {% endfor %}
-                                </div>
+                        <div class="col">
+                            <div class="text">
+                                {% for category in foundation.categories.all %}
+                                    {{ category }} |
+                                {% endfor %}
                             </div>
-                        </li>
+                        </div>
+                    </li>
                 {% endfor %}
             </ul>
 
