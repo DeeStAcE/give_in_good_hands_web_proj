@@ -9,6 +9,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from django.contrib import messages
 from django.core.mail import EmailMessage
+from django.db.models.query_utils import Q
 
 from account.tokens import account_activation_token
 
@@ -28,6 +29,23 @@ def activate_email(request, user, to_email):
         messages.success(request, f"Przejdź do swojej skrzynki pocztowej w celu potwierdzenia rejestracji")
     else:
         messages.error(request, f"Problem podczas wysyłania potwierdzenia rejestracji")
+
+
+# password reset email
+def password_reset_email(request, user):
+    mail_subject = "Password Reset request"
+    message = render_to_string("reset_password.html", {
+        'user': user,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+    })
+    email = EmailMessage(mail_subject, message, to=[user.email])
+
+    if email.send():
+        messages.success(request, f"Przejdź do swojej skrzynki pocztowej w celu zmiany hasła")
+    else:
+        messages.error(request, f"Problem podczas próby zmiany hasła")
 
 
 def get_user_from_email_verification_token(uidb64, token):
@@ -148,3 +166,64 @@ class ActivateUserView(View):
         user.save()
         messages.success(request, f"Konto aktywowane pomyślnie")
         return redirect('login')
+
+
+class PasswordResetView(View):
+
+    def get(self, request):
+        return render(request, 'password-reset.html')
+
+    def post(self, request):
+        user_email = request.POST.get('email')
+        associated_user = get_user_model().objects.filter(Q(email=user_email)).first()
+        if associated_user:
+            password_reset_email(request, associated_user)
+        else:
+            messages.error(request, f"W bazie nie ma podanego maila")
+        return redirect('index')
+
+
+def password_reset_confirm(request, uidb64, token):
+    user = get_user_from_email_verification_token(uidb64, token)
+    if user is None:
+        return redirect('index')
+    if request.method == 'POST':
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        if not (password1 and password2):
+            messages.error(request, 'Hasło nie zostało zmienione. Brak danych')
+            return redirect('login')
+
+        if password1 != password2:
+            messages.error(request, 'Hasła muszą być takie same. Spróbuj ponownie')
+            return redirect('login')
+
+        user.set_password(password1)
+        user.save()
+        messages.success(request, 'Hasło zostało zmienione')
+        return redirect('login')
+
+    return render(request, 'password-reset-confirm.html')
+
+
+# sending email to all superusers via contact form
+def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        to_email = [user.email for user in User.objects.filter(is_superuser=True)]
+        mail_subject = f"Contact from {name}"
+        message = render_to_string('contact_form.html', {
+            'email': email,
+            'message': message,
+        })
+        email = EmailMessage(mail_subject, message, to=to_email)
+
+        if email.send():
+            messages.success(request, f"Mail wysłany do administratorów")
+        else:
+            messages.error(request, f"Problem podczas wysyłania maila")
+
+    return redirect('index')
