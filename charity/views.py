@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.views import View
 from charity.models import *
@@ -11,28 +10,16 @@ class IndexView(View):
         donations = Donation.objects.all()
         donations_quantity = sum([donation.quantity for donation in donations])
         institutions = Institution.objects.all()
-
-        paginated_by = 5
-        # pagination
-        institutions_foundations = Paginator(institutions.filter(type=Institution.Types.FOUNDATION), paginated_by)
-        page1 = request.GET.get('page1')
-        institutions_nongov_organizations = Paginator(
-            institutions.filter(type=Institution.Types.NONGOVERNMENTAL_ORGANIZATION), paginated_by)
-        page2 = request.GET.get('page2')
-        institutions_local_collections = Paginator(institutions.filter(type=Institution.Types.LOCAL_COLLECTION),
-                                                   paginated_by)
-        page3 = request.GET.get('page3')
-
-        foundations_contacts = institutions_foundations.get_page(page1)
-        nongov_organizations_contacts = institutions_nongov_organizations.get_page(page2)
-        local_collections_contacts = institutions_local_collections.get_page(page3)
+        foundations = institutions.filter(type=Institution.Types.FOUNDATION)
+        nongov_organizations = institutions.filter(type=Institution.Types.NONGOVERNMENTAL_ORGANIZATION)
+        local_collections = institutions.filter(type=Institution.Types.LOCAL_COLLECTION)
 
         context = {
             'donations_quantity': donations_quantity,
             'supported_institutions': len(institutions),
-            'foundations': foundations_contacts,
-            'nongov_organizations': nongov_organizations_contacts,
-            'local_collections': local_collections_contacts,
+            'foundations': foundations,
+            'nongov_organizations': nongov_organizations,
+            'local_collections': local_collections,
         }
         return render(request, 'index.html', context=context)
 

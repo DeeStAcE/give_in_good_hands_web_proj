@@ -2,6 +2,11 @@
     {% load static %}
     <header class="header--main-page">
         {% include "nav.html" %}
+
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+
         <div class="slogan container container--90">
             <div class="slogan--item">
                 <h1>
@@ -126,17 +131,6 @@
 
             <!-- Pagination -->
             <ul class="help--slides-pagination">
-                <span class="step-links">
-                    {% if foundations.has_previous %}
-                        <a href="?page1={{ foundations.previous_page_number }}#help"
-                           class="btn btn--small btn--without-border">poprzednia</a>
-                    {% endif %}
-
-                    {% if foundations.has_next %}
-                        <a href="?page1={{ foundations.next_page_number }}#help"
-                           class="btn btn--small btn--without-border">następna</a>
-                    {% endif %}
-                </span>
             </ul>
         </div>
 
@@ -171,17 +165,6 @@
 
             <!-- Pagination -->
             <ul class="help--slides-pagination">
-                <span class="step-links">
-                    {% if nongov_organizations.has_previous %}
-                        <a href="?page2={{ nongov_organizations.previous_page_number }}#help"
-                           class="btn btn--small btn--without-border">poprzednia</a>
-                    {% endif %}
-
-                    {% if nongov_organizations.has_next %}
-                        <a href="?page2={{ nongov_organizations.next_page_number }}#help"
-                           class="btn btn--small btn--without-border">następna</a>
-                    {% endif %}
-                </span>
             </ul>
         </div>
 
@@ -216,17 +199,6 @@
 
             <!-- Pagination -->
             <ul class="help--slides-pagination">
-                <span class="step-links">
-                    {% if local_collections.has_previous %}
-                        <a href="?page3={{ local_collections.previous_page_number }}#help"
-                           class="btn btn--small btn--without-border">poprzednia</a>
-                    {% endif %}
-
-                    {% if local_collections.has_next %}
-                        <a href="?page3={{ local_collections.next_page_number }}#help"
-                           class="btn btn--small btn--without-border">następna</a>
-                    {% endif %}
-                </span>
             </ul>
         </div>
     </section>
