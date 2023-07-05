@@ -213,6 +213,9 @@ def contact(request):
         name = request.POST.get('name')
         email = request.POST.get('email')
         message = request.POST.get('message')
+        if not (name and email and message):
+            messages.error(request, f"Nie wprowadzono wszystkich danych. Mail nie został wysłany")
+            return redirect('index')
         to_email = [user.email for user in User.objects.filter(is_superuser=True)]
         mail_subject = f"Contact from {name}"
         message = render_to_string('contact_form.html', {
