@@ -1,0 +1,4 @@
+{
+	"appService.defaultWebAppToDeploy": "/subscriptions/04d0c83b-aaba-453a-899c-1765684fdbee/resourceGroups/django-projects/providers/Microsoft.Web/sites/deestace-good-hands",
+	"appService.deploySubpath": "."
+}

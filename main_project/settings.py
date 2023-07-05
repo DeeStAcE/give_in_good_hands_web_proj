@@ -11,14 +11,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
+# from dotenv import find_dotenv, load_dotenv
 import os
 
 # find .env automatically
-dotenv_path = find_dotenv()
+# dotenv_path = find_dotenv()
 
 # load up the entries as environment variables
-load_dotenv(dotenv_path)
+# load_dotenv(dotenv_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,9 +30,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['deestace-good-hands.azurewebsites.net']
+
+CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net']
 
 # Application definition
 
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -82,12 +85,13 @@ WSGI_APPLICATION = "main_project.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "charity_donation_db",
-        "USER": "postgres",
-        "PASSWORD": "coderslab",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "good_hands",
+        'USER': 'dawidadmin',
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': 5432,
+        'OPTIONS': {'sslmode': 'require'}
     }
 }
 
@@ -128,6 +132,9 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
