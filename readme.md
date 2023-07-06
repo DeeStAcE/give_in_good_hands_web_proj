@@ -1,5 +1,5 @@
 
-# Give in good hands - web project
+# Put in good hands - web project
 
 A web application based on Django. App was designed to provide a place where anyone could donate unused items such as clothes or toys to the trusted organisations. The web allows you to register and manage your donations.
 
