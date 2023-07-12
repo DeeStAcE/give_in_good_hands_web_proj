@@ -249,7 +249,6 @@ document.addEventListener("DOMContentLoaded", function () {
          */
         init() {
             this.events();
-            this.updateForm();
         }
 
         /**
@@ -303,14 +302,13 @@ document.addEventListener("DOMContentLoaded", function () {
             // Getting data from inputs
             const categories = document.querySelectorAll("input[name='categories']:checked")
             const quantity = document.querySelector("input[name='bags']")
-            const organization = document.querySelector("input[name='organization']:checked")
-            const organizationName = organization.parentElement.querySelector('div.title').innerText
             const formStep4Inputs = form.querySelectorAll("div[data-step='4'] div.form-group--inline input")
             const textArea = form.querySelector("div[data-step='4'] div.form-group--inline textarea")
 
             // filtering organizations by entered categories
             const organizations = document.querySelectorAll("#organization-choice div.form-group--checkbox")
             organizations.forEach(e => {
+                e.style.display = '';
                 categories.forEach(cat => {
                     if (!e.querySelector('#categories-inst').innerText.includes(cat.value)) {
                         e.style.display = 'none';
@@ -319,17 +317,20 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             // show data in the summary
-            const summaryItems = form.querySelectorAll("div[data-step='5'] span.summary--text")
-            const listElements = form.querySelectorAll("div[data-step='5'] div.form-section--column li")
+            if (this.currentStep === 5) {
+                const organization = document.querySelector("input[name='organization']:checked")
+                const organizationName = organization.parentElement.querySelector('div.title').innerText
+                const summaryItems = form.querySelectorAll("div[data-step='5'] span.summary--text")
+                const listElements = form.querySelectorAll("div[data-step='5'] div.form-section--column li")
 
-            summaryItems[0].innerText = `${quantity.value} x 60l worków z przedmiotami`
-            summaryItems[1].innerText = `${organizationName}`
+                summaryItems[0].innerText = `${quantity.value} x 60l worków z przedmiotami`
+                summaryItems[1].innerText = `${organizationName}`
 
-            for (let i = 0; i < formStep4Inputs.length; i++) {
-                listElements[i].innerText = formStep4Inputs[i].value
+                for (let i = 0; i < formStep4Inputs.length; i++) {
+                    listElements[i].innerText = formStep4Inputs[i].value
+                }
+                listElements[listElements.length - 1].innerText = textArea.value
             }
-            listElements[listElements.length - 1].innerText = textArea.value
-
         }
 
         /**
